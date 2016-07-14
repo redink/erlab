@@ -1,7 +1,9 @@
 -module(erlab_string).
 -export([tokens/2]).
--export([tokens_benchmark/0]).
-
+-export([ tokens_benchmark/0
+        , tokens_benchmark_for_erlab/0
+        , tokens_benchmark_for_stdlib/0
+        ]).
 
 -spec tokens(String, SeparatorList) -> Tokens when
       String :: string(),
@@ -48,14 +50,20 @@ tokens_test() ->
 
 
 tokens_benchmark() ->
+    io:format("Terlab : ~w~n", [tokens_benchmark_for_erlab()]),
+    io:format("Tstdlib: ~w~n", [tokens_benchmark_for_stdlib()]).
+
+tokens_benchmark_for_erlab() ->
     {Terlab,_} = timer:tc(fun() -> lists:foreach(fun(_) ->
         tokens_test_erlab()
     end, lists:seq(1, 10000)) end),
+    Terlab.
+
+tokens_benchmark_for_stdlib() ->
     {Tstdlib,_} = timer:tc(fun() -> lists:foreach(fun(_) ->
         tokens_test_stdlib()
     end, lists:seq(1, 10000)) end),
-    io:format("Terlab : ~w~n", [Terlab]),
-    io:format("Tstdlib: ~w~n", [Tstdlib]).
+    Tstdlib.
 
 
 tokens_test_erlab() ->
